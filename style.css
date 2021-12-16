@@ -26,7 +26,7 @@ body {
 }
 
 .date-container {
-  font-weight: 100;
+  font-weight: 300;
 }
 
 .date-container .time {
@@ -35,7 +35,6 @@ body {
 
 .date-container #am-pm {
   font-size: 30px;
-  margin-left: 20px;
 }
 
 .date-container .date {
@@ -167,5 +166,13 @@ body {
   }
   .current-info .others .weather-item {
     font-size: 14px;
+  }
+}
+
+@media only screen and (max-width: 1000px){
+  .future-forecast {
+    justify-content: start;
+    align-items: none;
+    overflow-x: scroll;
   }
 }
