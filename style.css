@@ -129,10 +129,6 @@ body {
   text-align: center;
 }
 
-.weather-forecast .weather-forecast-item .temp {
-  font-weight: 100;
-}
-
 @media only screen and (max-width: 730px) {
   .container {
     padding: 20px;

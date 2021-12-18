@@ -56,7 +56,7 @@ function showWeatherData(data){
     </div>
     <div class="weather-item">
         <div>Wind Speed</div>
-        <div>${wind_speed}</div>
+        <div>${wind_speed}m/s</div>
     </div>
     <div class="weather-item">
         <div>Sunrise</div>
@@ -72,11 +72,11 @@ function showWeatherData(data){
     data.daily.forEach((day, idx) => {
         if(idx == 0){
             currentTempEl.innerHTML = `
-            <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@4x.png" class="w-icon" alt="Weather icon">
+            <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" class="w-icon" alt="Weather icon">
             <div class="other">
                 <div class="day">${window.moment(day.dt * 1000).format("ddd")}</div>
-                <div class="temp">Night - ${day.temp.night}&#176; C</div>
-                <div class="temp">Day - ${day.temp.day}&#176; C</div>
+                <div class="temp">Day: ${Math.round(day.temp.day)}&#176; C</div>
+                <div class="temp">Night: ${Math.round(day.temp.night)}&#176; C</div>
             </div>
             `
         }else{
@@ -84,8 +84,8 @@ function showWeatherData(data){
             <div class="weather-forecast-item">
                 <div class="day">${window.moment(day.dt * 1000).format("ddd")}</div>
                 <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" class="w-icon" alt="Weather icon">
-                <div class="temp">Night - ${day.temp.night}&#176; C</div>
-                <div class="temp">Day -${day.temp.day}&#176; C</div>
+                <div class="temp">Day: ${Math.round(day.temp.day)}&#176; C</div>
+                <div class="temp">Night: ${Math.round(day.temp.night)}&#176; C</div>
             </div>
             `
         }
