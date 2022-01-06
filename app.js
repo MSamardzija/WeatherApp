@@ -5,6 +5,7 @@ const timezone = document.getElementById("time-zone");
 const countryEl = document.getElementById("country");
 const weatherForecastEl = document.getElementById("weather-forecast");
 const currentTempEl = document.getElementById("current-temp");
+var airIndex;
 
 const days = [
   "Sunday",
@@ -56,12 +57,22 @@ getWeatherData();
 function getWeatherData() {
   navigator.geolocation.getCurrentPosition((success) => {
     let { latitude, longitude } = success.coords;
+    // API FOR AIR POLLUTION
+    fetch(
+      `http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
+    ).then((res) =>
+      res.json().then((data) => {
+        console.log(data);
+        checkAir(data.list[0].main.aqi);
+      })
+    );
     fetch(
       `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`
     ).then((res) =>
       res.json().then((data) => {
-        console.log(data);
-        showWeatherData(data);
+        console.log(data);        
+        //Noob code is below
+        setTimeout(() => {showWeatherData(data);}, 500);
       })
     );
   });
@@ -97,6 +108,10 @@ function showWeatherData(data) {
     <div class="weather-item">
         <div>Sunset</div>
         <div>${window.moment(sunset * 1000).format("HH:mm a")}</div>
+    </div>
+    <div class="weather-item">
+      <div>Air Quality</div>
+      <div>${airIndex}</div>
     </div>
     `;
   let otherDayForcast = "";
@@ -135,7 +150,7 @@ function showWeatherData(data) {
   });
   weatherForecastEl.innerHTML = otherDayForcast;
   //   Change BG IMG
-    changeImg(weather[0].id);
+  changeImg(weather[0].id);
 }
 
 // Checking UV INDEX
@@ -151,6 +166,29 @@ function checkUV(data) {
     x = "Very high";
   }
   return x;
+}
+
+// Checking UV INDEX
+function checkAir(data) {
+  switch (data) {
+    case 1:
+      airIndex = "Good";
+      break;
+    case 2:
+      airIndex = "Fair";
+      break;
+    case 3:
+      airIndex = "Moderate";
+      break;
+    case 4:
+      airIndex = "Poor";
+      break;
+    case 5:
+      airIndex = "Very Poor";
+      break;
+    default:
+      airIndex = "Unknow";
+  }
 }
 
 // Change Background image
