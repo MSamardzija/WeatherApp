@@ -39,15 +39,11 @@ setInterval(() => {
   const date = time.getDate();
   const day = time.getDay();
   const hour = time.getHours();
-  const hoursIn12HrFormat = hour >= 13 ? hour % 12 : hour;
-  const minutes = time.getMinutes();
   const ampm = hour >= 12 ? "PM" : "AM";
+
   // Time
   timeEl.innerHTML =
-    (hoursIn12HrFormat < 10 ? "0" + hoursIn12HrFormat : hoursIn12HrFormat) +
-    ":" +
-    (minutes < 10 ? "0" + minutes : minutes) +
-    " " +
+    time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) +
     `<span id="am-pm">${ampm}</span>`;
   // Date
   dateEl.innerHTML = days[day] + ", " + date + " " + months[month];
@@ -55,27 +51,39 @@ setInterval(() => {
 getWeatherData();
 
 function getWeatherData() {
-  navigator.geolocation.getCurrentPosition((success) => {
-    let { latitude, longitude } = success.coords;
-    // API FOR AIR POLLUTION
-    fetch(
-      `http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
-    ).then((res) =>
-      res.json().then((data) => {
-        console.log(data);
-        checkAir(data.list[0].main.aqi);
-      })
-    );
-    fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`
-    ).then((res) =>
-      res.json().then((data) => {
-        console.log(data);        
-        //Noob code is below
-        setTimeout(() => {showWeatherData(data);}, 500);
-      })
-    );
-  });
+  navigator.geolocation.getCurrentPosition(
+    (success) => {
+      let { latitude, longitude } = success.coords;
+      console.log(success.coords);
+      // API FOR AIR POLLUTION
+      fetch(
+        `http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
+      ).then((res) =>
+        res.json().then((data) => {
+          console.log(data);
+          checkAir(data.list[0].main.aqi);
+        })
+      );
+      // General Data
+      fetch(
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`
+      ).then((res) =>
+        res.json().then((data) => {
+          console.log(data);
+          setTimeout(() => {
+            showWeatherData(data);
+          }, 500);
+        })
+      );
+    },
+    // If user denise
+    function (error) {
+      if (error.code == error.PERMISSION_DENIED){
+        console.log("request denied  :-(");
+        // alert("Allow location in order to see weather based on your location");
+      }
+    }
+  );
 }
 
 function showWeatherData(data) {
@@ -133,19 +141,17 @@ function showWeatherData(data) {
             `;
     } else {
       otherDayForcast += `
-            <div class="weather-forecast-item">
-                <div class="day">${window
-                  .moment(day.dt * 1000)
-                  .format("dddd")}</div>
-                <img src="http://openweathermap.org/img/wn/${
-                  day.weather[0].icon
-                }@2x.png" class="w-icon" alt="Weather icon">
-                <div class="temp">Day: ${Math.round(day.temp.day)}&#176; C</div>
-                <div class="temp">Night: ${Math.round(
-                  day.temp.night
-                )}&#176; C</div>
-            </div>
-            `;
+        <div class="weather-forecast-item">
+            <div class="day">${window
+              .moment(day.dt * 1000)
+              .format("dddd")}</div>
+            <img src="http://openweathermap.org/img/wn/${
+              day.weather[0].icon
+            }@2x.png" class="w-icon" alt="Weather icon">
+            <div class="temp">Day: ${Math.round(day.temp.day)}&#176; C</div>
+            <div class="temp">Night: ${Math.round(day.temp.night)}&#176; C</div>
+        </div>
+        `;
     }
   });
   weatherForecastEl.innerHTML = otherDayForcast;
