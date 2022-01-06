@@ -77,7 +77,7 @@ function getWeatherData() {
       );
     },
     // If user denise
-    function (error) {
+     (error) => {
       if (error.code == error.PERMISSION_DENIED){
         console.log("request denied  :-(");
         // alert("Allow location in order to see weather based on your location");
