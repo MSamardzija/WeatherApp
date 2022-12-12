@@ -51,30 +51,23 @@ setInterval(() => {
 getWeatherData();
 
 function getWeatherData() {
-  navigator.geolocation.getCurrentPosition(
-    (success) => {
+  navigator.geolocation.getCurrentPosition(async (success) => {
       let { latitude, longitude } = success.coords;
       console.log(success.coords);
       // API FOR AIR POLLUTION
-      fetch(
-        `http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
-      ).then((res) =>
-        res.json().then((data) => {
-          console.log(data);
-          checkAir(data.list[0].main.aqi);
-        })
-      );
-      // General Data
-      fetch(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`
-      ).then((res) =>
-        res.json().then((data) => {
-          console.log(data);
-          setTimeout(() => {
-            showWeatherData(data);
-          }, 500);
-        })
-      );
+      try {
+        const air = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`)
+        const airData = await air.json();
+        console.log(airData);
+        checkAir(airData.list[0].main.aqi);
+        
+        // General Data
+        const weather = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`);
+        const weatherData = await weather.json();
+        showWeatherData(weatherData);
+      } catch (err) {
+        console.log(`Error here saying ${err}`);
+      }
     },
     // If user denise
      (error) => {
