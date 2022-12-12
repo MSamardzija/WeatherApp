@@ -167,7 +167,7 @@ function checkUV(data) {
   return x;
 }
 
-// Checking UV INDEX
+// Checking Air Quality
 function checkAir(data) {
   switch (data) {
     case 1:
