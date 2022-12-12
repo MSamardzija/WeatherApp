@@ -54,17 +54,17 @@ function getWeatherData() {
   navigator.geolocation.getCurrentPosition(async (success) => {
       let { latitude, longitude } = success.coords;
       console.log(success.coords);
-      // API FOR AIR POLLUTION
+      const url = [
+        `http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`,
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`
+      ]
+
       try {
-        const air = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`)
-        const airData = await air.json();
-        console.log(airData);
-        checkAir(airData.list[0].main.aqi);
-        
-        // General Data
-        const weather = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`);
-        const weatherData = await weather.json();
-        showWeatherData(weatherData);
+        const allData = await Promise.all(url.map(links => fetch(links).then(data => data.json())));
+        // API FOR AIR POLLUTION
+        checkAir(allData[0].list[0].main.aqi);
+        // Weather
+        showWeatherData(allData[1]);
       } catch (err) {
         console.log(`Error here saying ${err}`);
       }
