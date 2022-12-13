@@ -119,7 +119,7 @@ function showWeatherData(data) {
   data.daily.forEach((day, idx) => {
     if (idx == 0) {
       currentTempEl.innerHTML = `
-            <img src="http://openweathermap.org/img/wn/${
+            <img src="https://openweathermap.org/img/wn/${
               day.weather[0].icon
             }@2x.png" class="w-icon" alt="Weather icon">
             <div class="other">
@@ -138,7 +138,7 @@ function showWeatherData(data) {
             <div class="day">${window
               .moment(day.dt * 1000)
               .format("dddd")}</div>
-            <img src="http://openweathermap.org/img/wn/${
+            <img src="https://openweathermap.org/img/wn/${
               day.weather[0].icon
             }@2x.png" class="w-icon" alt="Weather icon">
             <div class="temp">Day: ${Math.round(day.temp.day)}&#176; C</div>
